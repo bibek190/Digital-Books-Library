@@ -7,8 +7,11 @@ import CustomInput from "../../components/layouts/custom-input/CustomInput";
 import { useState } from "react";
 import { toast } from "react-toastify";
 import { auth } from "../../config/firebase-config";
+import { getUserAction } from "../../user/userAction";
+import { useDispatch } from "react-redux";
 
 function Login() {
+  const dispatch = useDispatch();
   const [form, setForm] = useState();
 
   const handleOnSubmit = async (e) => {
@@ -20,7 +23,12 @@ function Login() {
       toast.promise(signInPromise, {
         pending: "In Progress....",
       });
-      const signInValue = await signInPromise;
+
+      const { user } = await signInPromise;
+
+      // send another call to fire base
+      dispatch(getUserAction(user.uid));
+
       toast.success("Logged in Successfully");
     } catch (e) {
       let { message } = e;

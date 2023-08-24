@@ -15,11 +15,11 @@ function Header() {
             <Link className="nav-link" to="/">
               Home
             </Link>
-            <Link className="nav-link" to="/signin">
-              Sign In
+            <Link className="nav-link" to="/login">
+              Log-In
             </Link>
             <Link className="nav-link" to="/signup">
-              Sign Up
+              Sign-Up
             </Link>
           </Nav>
         </Navbar.Collapse>
