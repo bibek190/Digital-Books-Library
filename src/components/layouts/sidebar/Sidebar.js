@@ -27,6 +27,9 @@ function Sidebar() {
             <Link className="nav-link" to="/history">
               History
             </Link>
+            <Link className="nav-link" to="/admin-signup">
+              Signup
+            </Link>
           </li>
         </ul>
       </div>

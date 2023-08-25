@@ -9,44 +9,17 @@ import { toast } from "react-toastify";
 import { auth } from "../../config/firebase-config";
 import { getUserAction } from "../../user/userAction";
 import { useDispatch, useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import AdminLayout from "../../components/layouts/AdminLayout";
+import { addNewBookAction } from "./bookAction";
 
-function Login() {
+function NewBook() {
+  const [form, setForm] = useState({});
   const dispatch = useDispatch();
-  const [form, setForm] = useState();
-  const navigate = useNavigate();
-
-  const { admin } = useSelector((state) => state.adminInfo);
-
-  useEffect(() => {
-    admin?.uid && navigate("/dashboard");
-  }, [admin, navigate]);
 
   const handleOnSubmit = async (e) => {
     e.preventDefault();
-    console.log("Form data", form);
-    const { email, password } = form;
-    try {
-      const signInPromise = signInWithEmailAndPassword(auth, email, password);
-      toast.promise(signInPromise, {
-        pending: "In Progress....",
-      });
-
-      const { user } = await signInPromise;
-
-      // send another call to fire base
-      await getUserAction(user.uid, dispatch);
-      navigate("/dashboard");
-
-      toast.success("Logged in Successfully");
-    } catch (e) {
-      let { message } = e;
-      if (message.includes("auth/wrong-password")) {
-        toast.error("Invalid Login");
-      } else {
-        toast.error(message);
-      }
-    }
+    dispatch(addNewBookAction(form));
   };
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -55,22 +28,47 @@ function Login() {
 
   const inputs = [
     {
-      label: "Email",
-      name: "email",
-      type: "email",
-      placeholder: "abc@ab.com",
+      label: "Book Title",
+      name: "title",
+      type: "text",
+      placeholder: "Twilight",
       required: true,
     },
     {
-      label: "Password",
-      name: "password",
-      type: "password",
-      placeholder: " 12xxxxx",
+      label: "Author Name",
+      name: "name",
+      type: "text",
+      placeholder: "Author",
       required: true,
+    },
+    {
+      label: "Published Year",
+      name: "year",
+      type: "number",
+      placeholder: "2022",
+    },
+    {
+      label: "Image URL",
+      name: "url",
+      type: "url",
+      placeholder: "https://.../",
+    },
+    {
+      label: "Summary",
+      name: "summary",
+      type: "text",
+      as: "textarea",
+      rows: "4",
+      placeholder: "Summary",
     },
   ];
   return (
-    <DefaultLayout>
+    <AdminLayout>
+      <h3>New Book</h3>
+      <hr />
+      <Link to="/books">
+        <Button variant="secondary"> 👈 Go Back</Button>
+      </Link>
       <div className="p-3 border shadow rounded admin-form">
         <Form onSubmit={handleOnSubmit}>
           {inputs.map((input, i) => (
@@ -82,8 +80,8 @@ function Login() {
           </Button>
         </Form>
       </div>
-    </DefaultLayout>
+    </AdminLayout>
   );
 }
 
-export default Login;
+export default NewBook;

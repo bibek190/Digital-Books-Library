@@ -8,6 +8,7 @@ import { toast } from "react-toastify";
 import { auth, db } from "../../config/firebase-config";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { doc, setDoc } from "firebase/firestore";
+import AdminLayout from "../../components/layouts/AdminLayout";
 
 function SignUp() {
   const [form, setForm] = useState({});
@@ -100,7 +101,7 @@ function SignUp() {
   ];
 
   return (
-    <DefaultLayout>
+    <AdminLayout>
       <div className="p-3 border shadow rounded admin-form">
         <Form onSubmit={handleOnSubmit}>
           {inputs.map((input, i) => (
@@ -112,7 +113,7 @@ function SignUp() {
           </Button>
         </Form>
       </div>
-    </DefaultLayout>
+    </AdminLayout>
   );
 }
 
