@@ -1,32 +1,72 @@
-import React from "react";
-import DefaultLayout from "../../components/layouts/DefaultLayout";
-import Button from "react-bootstrap/Button";
-import Form from "react-bootstrap/Form";
-import CustomInput from "../../components/layouts/custom-input/CustomInput";
-import { useState } from "react";
-import { toast } from "react-toastify";
-import { auth, db } from "../../config/firebase-config";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { doc, setDoc } from "firebase/firestore";
+import React, { useState } from "react";
+import { Alert } from "react-bootstrap";
+import Button from "react-bootstrap/Button";
+import Form from "react-bootstrap/Form";
+import { toast } from "react-toastify";
+import CustomInput from "../../components/customInput/CustomInput";
 import AdminLayout from "../../components/layouts/AdminLayout";
+import { auth, db } from "../../config/firebase-config";
 
 function SignUp() {
   const [form, setForm] = useState({});
+  const [errorMsg, setErrorMsg] = useState();
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setForm({ ...form, [name]: value });
-  };
+  const inputs = [
+    {
+      label: "First Name",
+      name: "fName",
+      type: "text",
+      placeholder: "Sam",
+      required: true,
+    },
+    {
+      label: "Last Name",
+      name: "lName",
+      type: "text",
+      placeholder: "Smith",
+      required: true,
+    },
+    {
+      label: "Phone",
+      name: "phone",
+      type: "number",
+      placeholder: "04xxxxxx",
+      required: true,
+    },
+    {
+      label: "Email",
+      name: "email",
+      type: "email",
+      placeholder: "sam@smith.com",
+      required: true,
+    },
+    {
+      label: "Password",
+      name: "password",
+      type: "password",
+      placeholder: "*******",
+      required: true,
+      minLength: 6,
+    },
+    {
+      label: "Confirm Password",
+      name: "confirmPassword",
+      type: "password",
+      placeholder: "*******",
+      required: true,
+      minLength: 6,
+    },
+  ];
 
   const handleOnSubmit = async (e) => {
     e.preventDefault();
-
     if (form.password !== form.confirmPassword) {
-      toast.error("Confirm password, it did't match");
+      toast.error("Confirm pass and pass did not match");
       return;
     }
     const { email, password } = form;
-
     try {
       const authSnapPromise = createUserWithEmailAndPassword(
         auth,
@@ -34,81 +74,50 @@ function SignUp() {
         password
       );
       toast.promise(authSnapPromise, {
-        pending: "In progress....",
-        success: "Successfully created",
+        pending: "In Progress...",
       });
+
       const authSnap = await authSnapPromise;
       if (authSnap.user.uid) {
-        const docRef = doc(db, "users", authSnap.user.uid);
-        await setDoc(docRef, form);
+        // const docRef = doc(db, "users", authSnap.user.uid);
+        const { password, confirmPassword, ...rest } = form;
+        await setDoc(doc(db, "users", authSnap.user.uid), rest);
+
+        toast.success("New user has been created");
       }
-      // if (authSnap.user.uid) {
-      //   toast.success("New user has been created");
-      // }
     } catch (e) {
-      console.log(e.message);
-      if (e.message.includes("auth/email-already-in-use")) {
-        toast.error("Email already exist!!");
+      let { message } = e;
+      console.log(e);
+      if (message.includes("auth/email-already-in-use")) {
+        toast.error("Email already exist, try with different email");
       } else {
-        toast.error("Something went wrong.Please try again");
+        toast.error(message);
       }
     }
   };
 
-  const inputs = [
-    {
-      label: "First Name",
-      name: "fName",
-      type: "text",
-      placeholder: "Smith",
-      required: true,
-    },
-    {
-      label: "Last Name",
-      name: "lName",
-      type: "text",
-      placeholder: "Shrestha",
-      required: true,
-    },
-    {
-      label: "Phone",
-      name: "phone",
-      type: "number",
-      placeholder: "1234....",
-      required: true,
-    },
-    {
-      label: "Email",
-      name: "email",
-      type: "email",
-      placeholder: "abc@ab.com",
-      required: true,
-    },
-    {
-      label: "Password",
-      name: "password",
-      type: "password",
-      placeholder: " 12xxxxx",
-      required: true,
-    },
-    {
-      label: "ConfirmPassword",
-      name: "confirmPassword",
-      type: "password",
-      placeholder: " 12xxxxx",
-      required: true,
-    },
-  ];
+  const handleOnChange = (e) => {
+    const { name, value } = e.target;
+    setForm({ ...form, [name]: value });
+  };
 
   return (
     <AdminLayout>
       <div className="p-3 border shadow rounded admin-form">
+        {errorMsg && <Alert variant={"danger"}>{errorMsg}</Alert>}
         <Form onSubmit={handleOnSubmit}>
           {inputs.map((input, i) => (
-            <CustomInput onChange={handleChange} key={i} {...input} />
+            <CustomInput
+              key={i}
+              onChange={handleOnChange}
+              // label={input.label}
+              // placeholder={input.placeholder}
+              // type={input.type}
+              {...input}
+            />
           ))}
 
-          <Button variant="success" type="submit">
+          <Button variant="primary" type="submit">
             Register
           </Button>
         </Form>

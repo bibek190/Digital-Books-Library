@@ -2,18 +2,23 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
   bookList: [],
+  selectedBook: {}
 };
 
-const bookSlice = createSlice({
+export const bookSlice = createSlice({
   name: "book",
   initialState,
   reducers: {
-    setBooks: (state, action) => {
-      state.bookList = action.payload;
+    setBooks: (state, { payload }) => {
+      state.bookList = payload;
+    },
+    setSelectedBook: (state, { payload }) => {
+      state.selectedBook = payload;
     },
   },
 });
 
-export const { setBooks } = bookSlice.actions;
+// Action creators are generated for each case reducer function
+export const { setBooks, setSelectedBook } = bookSlice.actions;
 
 export default bookSlice.reducer;

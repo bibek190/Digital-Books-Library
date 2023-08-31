@@ -1,12 +1,11 @@
 import React from "react";
-import Header from "./Header";
+import SideBar from "../sideBar/SideBar";
 import Footer from "./Footer";
-import Sidebar from "./sidebar/Sidebar";
-
+import Header from "./Header";
 function AdminLayout({ children }) {
   return (
     <div className="d-flex">
-      <Sidebar />
+      <SideBar />
       <div className="w-75 flex-grow-1">
         <Header />
         <div className="main">{children}</div>

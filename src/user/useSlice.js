@@ -4,17 +4,17 @@ const initialState = {
   admin: {},
 };
 
-const useSlice = createSlice({
+export const useSlice = createSlice({
   name: "user",
   initialState,
   reducers: {
-    setAdmin: (state, action) => {
-      console.log("action.payload", action.payload);
-      state.admin = action.payload;
+    setAdmin: (state, { payload }) => {
+      state.admin = payload;
     },
   },
 });
 
+// Action creators are generated for each case reducer function
 export const { setAdmin } = useSlice.actions;
 
 export default useSlice.reducer;

@@ -1,7 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 
-function Sidebar() {
+function SideBar() {
   return (
     <div className="bg-dark text-light sidebar">
       <div className="mt-4 text-center">Admin</div>
@@ -27,8 +27,10 @@ function Sidebar() {
             <Link className="nav-link" to="/history">
               History
             </Link>
+          </li>
+          <li>
             <Link className="nav-link" to="/admin-signup">
-              Signup
+              SignUp
             </Link>
           </li>
         </ul>
@@ -37,4 +39,4 @@ function Sidebar() {
   );
 }
 
-export default Sidebar;
+export default SideBar;

@@ -1,26 +1,41 @@
-import React, { useEffect } from "react";
 import { signInWithEmailAndPassword } from "firebase/auth";
-import DefaultLayout from "../../components/layouts/DefaultLayout";
+import React, { useEffect, useState } from "react";
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
-import CustomInput from "../../components/layouts/custom-input/CustomInput";
-import { useState } from "react";
-import { toast } from "react-toastify";
 import { auth } from "../../config/firebase-config";
-import { getUserAction } from "../../user/userAction";
+
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-
+import { toast } from "react-toastify";
+import CustomInput from "../../components/customInput/CustomInput";
+import DefaultLayout from "../../components/layouts/DefaultLayout";
+import { getUserAction } from "../../user/userAction";
 function Login() {
   const dispatch = useDispatch();
-  const [form, setForm] = useState();
   const navigate = useNavigate();
-
   const { admin } = useSelector((state) => state.adminInfo);
-
   useEffect(() => {
     admin?.uid && navigate("/dashboard");
   }, [admin, navigate]);
+
+  const [form, setForm] = useState({});
+
+  const inputs = [
+    {
+      label: "Email",
+      name: "email",
+      type: "email",
+      placeholder: "sam@smith.com",
+      required: true,
+    },
+    {
+      label: "Password",
+      name: "password",
+      type: "password",
+      placeholder: "*******",
+      required: true,
+    },
+  ];
 
   const handleOnSubmit = async (e) => {
     e.preventDefault();
@@ -29,16 +44,18 @@ function Login() {
     try {
       const signInPromise = signInWithEmailAndPassword(auth, email, password);
       toast.promise(signInPromise, {
-        pending: "In Progress....",
+        pending: "In Progress...",
       });
-
       const { user } = await signInPromise;
 
-      // send another call to fire base
-      await getUserAction(user.uid, dispatch);
+      // Create a seaprate file to handle this (Action)
+      // Once login successful...> send another call to firebase to grab user info and then save respone to store
+      // Make a call
+      // Grab valur form DB
+      // useDispatch to sabe Admin
+      dispatch(getUserAction(user.uid));
+      toast.success("Logged In Successfully");
       navigate("/dashboard");
-
-      toast.success("Logged in Successfully");
     } catch (e) {
       let { message } = e;
       if (message.includes("auth/wrong-password")) {
@@ -48,33 +65,23 @@ function Login() {
       }
     }
   };
-  const handleChange = (e) => {
+  const handleOnChange = (e) => {
     const { name, value } = e.target;
     setForm({ ...form, [name]: value });
   };
-
-  const inputs = [
-    {
-      label: "Email",
-      name: "email",
-      type: "email",
-      placeholder: "abc@ab.com",
-      required: true,
-    },
-    {
-      label: "Password",
-      name: "password",
-      type: "password",
-      placeholder: " 12xxxxx",
-      required: true,
-    },
-  ];
   return (
     <DefaultLayout>
       <div className="p-3 border shadow rounded admin-form">
         <Form onSubmit={handleOnSubmit}>
           {inputs.map((input, i) => (
-            <CustomInput {...input} key={i} onChange={handleChange} />
+            <CustomInput
+              key={i}
+              onChange={handleOnChange}
+              // label={input.label}
+              // placeholder={input.placeholder}
+              // type={input.type}
+              {...input}
+            />
           ))}
 
           <Button variant="primary" type="submit">

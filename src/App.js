@@ -1,21 +1,22 @@
+import { onAuthStateChanged } from "firebase/auth";
 import React from "react";
+import { useDispatch } from "react-redux";
 import { Route, Routes } from "react-router-dom";
-import "./App.css";
-import Login from "./pages/auth/Login";
-import SignUp from "./pages/auth/SignUp";
-import Home from "./pages/home/Home";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import Books from "./pages/books/Books";
-import Clients from "./pages/clients/Clients";
-import Dashboard from "./pages/dashboard/Dashboard.js";
-import History from "./pages/history/History";
+import "./App.css";
 import PrivateRoute from "./components/privateRoute/PrivateRoute";
-import { onAuthStateChanged } from "firebase/auth";
-import { getUserAction } from "./user/userAction";
-import { useDispatch } from "react-redux";
 import { auth } from "./config/firebase-config";
+import Login from "./pages/auth/Login";
+import SignUp from "./pages/auth/SignUp";
+import Books from "./pages/books/Books";
+import EditBook from "./pages/books/EditBook";
 import NewBook from "./pages/books/NewBook";
+import Clients from "./pages/clients/Clients";
+import Dashboard from "./pages/dashboard/Dashboard";
+import History from "./pages/history/History";
+import Home from "./pages/home/Home";
+import { getUserAction } from "./user/userAction";
 
 function App() {
   const dispatch = useDispatch();
@@ -25,6 +26,11 @@ function App() {
   return (
     <div>
       <Routes>
+        {/* Public Routes */}
+        <Route path="/" element={<Home />} />
+        <Route path="signin" element={<Login />} />
+
+        {/* Private Routes */}
         <Route
           path="dashboard"
           element={
@@ -33,11 +39,37 @@ function App() {
             </PrivateRoute>
           }
         />
+
+        <Route
+          path="admin-signup"
+          element={
+            <PrivateRoute>
+              <SignUp />
+            </PrivateRoute>
+          }
+        />
         <Route
           path="books"
           element={
             <PrivateRoute>
               <Books />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="new-book"
+          element={
+            <PrivateRoute>
+              <NewBook />
+            </PrivateRoute>
+          }
+        />
+
+        <Route
+          path="edit-book/:id"
+          element={
+            <PrivateRoute>
+              <EditBook />
             </PrivateRoute>
           }
         />
@@ -57,29 +89,8 @@ function App() {
             </PrivateRoute>
           }
         />
-        <Route
-          path="new-book"
-          element={
-            <PrivateRoute>
-              <NewBook />
-            </PrivateRoute>
-          }
-        />
-        <Route path="/" element={<Home />} />
-        <Route path="/dashboard" element={<Dashboard />} />
-        <Route path="/history" element={<History />} />
-        <Route path="/login" element={<Login />} />
-        <Route
-          path="/admin-signup"
-          element={
-            <PrivateRoute>
-              <SignUp />
-            </PrivateRoute>
-          }
-        />
         <Route path="*" element={<Home />} />
       </Routes>
-
       <ToastContainer />
     </div>
   );

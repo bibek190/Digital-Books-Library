@@ -1,14 +1,14 @@
+.main {
+  min-height: 70vh;
+  padding: 1rem;
+}
+
 .admin-form {
-  width: 500px;
+  width: 400px;
   margin: auto;
   margin-top: 3rem;
 }
 
 .sidebar ul li {
   line-height: 3rem;
-  text-transform: uppercase;
-}
-
-.main {
-  padding: 1rem;
 }

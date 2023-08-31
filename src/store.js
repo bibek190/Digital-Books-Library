@@ -1,12 +1,9 @@
-import adminReducer from "./user/useSlice";
+import { configureStore } from "@reduxjs/toolkit";
 import bookReducer from "./pages/books/bookSlice";
-
-const { configureStore } = require("@reduxjs/toolkit");
-
-const store = configureStore({
+import adminReducer from "./user/useSlice";
+export const store = configureStore({
   reducer: {
     adminInfo: adminReducer,
-    bookInfo: bookReducer,
+    book: bookReducer,
   },
 });
-export default store;
