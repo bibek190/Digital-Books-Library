@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Button, Form } from "react-bootstrap";
-import { AiOutlineArrowLeft } from "react-icons/ai";
+import { BiArrowBack } from "react-icons/bi";
 import { useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
 import CustomInput from "../../components/customInput/CustomInput";
@@ -8,7 +8,9 @@ import AdminLayout from "../../components/layouts/AdminLayout";
 import { addNewBookAction } from "./bookAction";
 
 function NewBook() {
-  const [form, setForm] = useState({});
+  const [form, setForm] = useState({
+    isAvailable: true,
+  });
   const dispatch = useDispatch();
   const inputs = [
     {
@@ -50,21 +52,22 @@ function NewBook() {
     const { name, value } = e.target;
     setForm({ ...form, [name]: value });
   };
-  const handleOnSubmit = (e) => {
-    e.preventDefault();
-    console.log(form);
-    dispatch(addNewBookAction(form));
-    // Pas all the book info to FireBase
-    // New book action to handle this part
-  };
 
+  const handleOnSubmit = async (e) => {
+    e.preventDefault();
+    console.log("Form data", form);
+
+    // Call Firebase and save the data
+    // Call a addnewBookAction wich will take care of things for us!
+    dispatch(addNewBookAction(form));
+  };
   return (
     <AdminLayout>
       <h3>New Book</h3>
       <hr></hr>
       <Link to="/books">
         <Button variant="secondary">
-          <AiOutlineArrowLeft />
+          <BiArrowBack />
           Go Back
         </Button>
       </Link>
@@ -82,7 +85,7 @@ function NewBook() {
           ))}
 
           <Button variant="primary" type="submit">
-            Create
+            Add
           </Button>
         </Form>
       </div>

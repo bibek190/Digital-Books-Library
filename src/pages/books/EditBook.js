@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Button, Form } from "react-bootstrap";
-import { AiOutlineArrowLeft } from "react-icons/ai";
+import { BiArrowBack } from "react-icons/bi";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import CustomInput from "../../components/customInput/CustomInput";
@@ -12,27 +12,23 @@ import {
 } from "./bookAction";
 
 function EditBook() {
-  const { id } = useParams();
+  const { bookId } = useParams();
   const dispatch = useDispatch();
-  const navigate = useNavigate();
-  const { selectedBook } = useSelector((state) => state.book);
+  const selectedBook = useSelector((state) => state.book.selectedBook);
   const [form, setForm] = useState({});
+  const navigate = useNavigate();
 
   useEffect(() => {
-    dispatch(getBookAction(id));
+    dispatch(getBookAction(bookId));
     setForm(selectedBook);
-  }, [id]);
-
-  useEffect(() => {
-    setForm(selectedBook);
-  }, [selectedBook]);
+  }, [bookId]);
 
   const inputs = [
     {
       label: "Book Title",
       name: "title",
-      type: "text",
       value: form.title,
+      type: "text",
       placeholder: "Twilight",
       required: true,
     },
@@ -61,8 +57,8 @@ function EditBook() {
     {
       label: "Summary",
       name: "summary",
-      type: "text",
       value: form.summary,
+      type: "text",
       as: "textarea",
       rows: "4",
       placeholder: "Summary",
@@ -72,26 +68,24 @@ function EditBook() {
     const { name, value } = e.target;
     setForm({ ...form, [name]: value });
   };
-  const handleOnSubmit = (e) => {
+
+  const handleOnSubmit = async (e) => {
     e.preventDefault();
-    console.log(form);
+    console.log("Form data", form);
     dispatch(updateBookAction(form));
-    // Pas all the book info to FireBase
-    // New book action to handle this part
   };
 
   const handleOnDelete = (e) => {
-    dispatch(deleteBookAction(id));
+    dispatch(deleteBookAction(bookId));
     navigate("/books");
   };
-
   return (
     <AdminLayout>
       <h3>Edit Book</h3>
       <hr></hr>
       <Link to="/books">
         <Button variant="secondary">
-          <AiOutlineArrowLeft />
+          <BiArrowBack />
           Go Back
         </Button>
       </Link>
@@ -112,11 +106,9 @@ function EditBook() {
             Update
           </Button>
         </Form>
-        <div className="d-grid mt-3">
-          <Button onClick={handleOnDelete} variant="danger" type="submit">
-            Delete
-          </Button>
-        </div>
+        <Button onClick={handleOnDelete} variant="danger" type="submit">
+          Delete
+        </Button>
       </div>
     </AdminLayout>
   );

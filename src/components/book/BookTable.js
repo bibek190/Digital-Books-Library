@@ -1,28 +1,16 @@
 import React, { useEffect, useState } from "react";
 import { Button, Form, Table } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
-import { Link, useNavigate } from "react-router-dom";
-import {
-  deleteBookAction,
-  getAllBookAction,
-} from "../../pages/books/bookAction";
+import { Link } from "react-router-dom";
+import { getAllBookAction } from "../../pages/books/bookAction";
 
 function BookTable() {
-  const dispatch = useDispatch();
-  const { bookList } = useSelector((state) => state.book);
-
+  const bookList = useSelector((state) => state.book.bookList);
   const [displayList, setDisplayList] = useState([]);
-  const navigate = useNavigate();
-  const handleOnDelete = (id) => {
-    if (window.confirm("Are you sure")) {
-      dispatch(deleteBookAction(id));
-      navigate("/books");
-    }
-  };
-
+  const dispatch = useDispatch();
   useEffect(() => {
-    dispatch(getAllBookAction()); // ALways update booklist
-  }, [dispatch]);
+    dispatch(getAllBookAction());
+  }, []);
 
   useEffect(() => {
     setDisplayList(bookList);
@@ -30,20 +18,19 @@ function BookTable() {
 
   const handleOnChange = (e) => {
     const { value } = e.target;
-    console.log(value);
-    const filteredBook = bookList.filter((book) =>
-      book.title.toLowerCase().includes(value.toLowerCase())
-    );
-    console.log("filteredBook", filteredBook);
+    const filteredBook = bookList.filter((book) => {
+      return book.title.toLowerCase().includes(value.toLowerCase());
+    });
     setDisplayList(filteredBook);
   };
+
   return (
     <div>
       <div className="mt-2 mb-2">
         <Form.Control
-          onChange={handleOnChange}
-          type="text"
           placeholder="Search by book name..."
+          type="text"
+          onChange={handleOnChange}
         />
       </div>
       <Table striped bordered hover>
@@ -65,24 +52,13 @@ function BookTable() {
                 </td>
                 <td>
                   <h3>{book.title}</h3>
-                  <p>
-                    {book.name} - {book.year}
-                  </p>
+                  <p>{book.year}</p>
                   <p>{book.summary}</p>
                 </td>
                 <td>
                   <Link to={`/edit-book/${book.id}`}>
                     <Button variant="warning">Edit</Button>
                   </Link>
-                  <div className="d-grid mt-3">
-                    <Button
-                      onClick={() => handleOnDelete(book.id)}
-                      variant="danger"
-                      type="submit"
-                    >
-                      Delete
-                    </Button>
-                  </div>
                 </td>
               </tr>
             );

@@ -15,7 +15,15 @@ function Login() {
   const navigate = useNavigate();
   const { admin } = useSelector((state) => state.adminInfo);
   useEffect(() => {
-    admin?.uid && navigate("/dashboard");
+    if (admin?.uid) {
+      if (admin?.role == "student") {
+        navigate("/");
+      }
+      if (admin?.role == "admin") {
+        navigate("/dashboard");
+      }
+    }
+    // admin?.uid && navigate("/dashboard");
   }, [admin, navigate]);
 
   const [form, setForm] = useState({});
@@ -88,6 +96,15 @@ function Login() {
             Login
           </Button>
         </Form>
+        <p>
+          Forget Password?
+          <a href="/reset-password">Reset Password</a>
+        </p>
+
+        <p>
+          Want to Sign Up?
+          <a href="/sign-up">Sign Up here</a>
+        </p>
       </div>
     </DefaultLayout>
   );

@@ -1,13 +1,10 @@
 import React from "react";
 import { Button } from "react-bootstrap";
-import { Link, useNavigate } from "react-router-dom";
-import BookTable from "../../components/book/BookTable";
+import { Link } from "react-router-dom";
 import AdminLayout from "../../components/layouts/AdminLayout";
-import { useDispatch } from "react-redux";
-import { deleteBookAction } from "./bookAction";
+import BookTable from "../../components/book/BookTable";
 
 function Books() {
-
   return (
     <AdminLayout>
       <h3>Books</h3>
@@ -17,6 +14,7 @@ function Books() {
           <Button>Add Book</Button>
         </Link>
       </div>
+      {/* Table and Search bar for table */}
       <BookTable />
     </AdminLayout>
   );

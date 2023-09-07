@@ -1,5 +1,5 @@
 import { onAuthStateChanged } from "firebase/auth";
-import React from "react";
+import React, { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { Route, Routes } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
@@ -7,14 +7,18 @@ import "react-toastify/dist/ReactToastify.css";
 import "./App.css";
 import PrivateRoute from "./components/privateRoute/PrivateRoute";
 import { auth } from "./config/firebase-config";
+import AdminSignUp from "./pages/auth/AdminSignUp";
 import Login from "./pages/auth/Login";
-import SignUp from "./pages/auth/SignUp";
+import PublicSignUp from "./pages/auth/PublicSignUp";
+import ResetPassword from "./pages/auth/ResetPassword";
+import BookLanding from "./pages/books/BookLanding";
 import Books from "./pages/books/Books";
 import EditBook from "./pages/books/EditBook";
 import NewBook from "./pages/books/NewBook";
+import { getAllBookAction } from "./pages/books/bookAction";
+import BorrowHistory from "./pages/borrowHistory/BorrowHistory";
 import Clients from "./pages/clients/Clients";
 import Dashboard from "./pages/dashboard/Dashboard";
-import History from "./pages/history/History";
 import Home from "./pages/home/Home";
 import { getUserAction } from "./user/userAction";
 
@@ -23,12 +27,20 @@ function App() {
   onAuthStateChanged(auth, (user) => {
     user?.uid && dispatch(getUserAction(user.uid));
   });
+
+  useEffect(() => {
+    dispatch(getAllBookAction());
+  }, []);
+
   return (
     <div>
       <Routes>
         {/* Public Routes */}
         <Route path="/" element={<Home />} />
         <Route path="signin" element={<Login />} />
+        <Route path="sign-up" element={<PublicSignUp />} />
+        <Route path="reset-password" element={<ResetPassword />} />
+        <Route path="book/:bookId" element={<BookLanding />} />
 
         {/* Private Routes */}
         <Route
@@ -44,7 +56,7 @@ function App() {
           path="admin-signup"
           element={
             <PrivateRoute>
-              <SignUp />
+              <AdminSignUp />
             </PrivateRoute>
           }
         />
@@ -64,9 +76,8 @@ function App() {
             </PrivateRoute>
           }
         />
-
         <Route
-          path="edit-book/:id"
+          path="edit-book/:bookId"
           element={
             <PrivateRoute>
               <EditBook />
@@ -77,7 +88,7 @@ function App() {
           path="history"
           element={
             <PrivateRoute>
-              <History />
+              <BorrowHistory />
             </PrivateRoute>
           }
         />
@@ -89,7 +100,7 @@ function App() {
             </PrivateRoute>
           }
         />
-        <Route path="*" element={<Home />} />
+        <Route path="*" element={<p>This URL is invalid</p>} />
       </Routes>
       <ToastContainer />
     </div>

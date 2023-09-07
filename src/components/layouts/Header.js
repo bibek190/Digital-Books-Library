@@ -19,7 +19,7 @@ function Header() {
   return (
     <Navbar variant="dark" bg="dark" expand="lg">
       <Container>
-        <Navbar.Brand href="#home">Library Management</Navbar.Brand>
+        <Navbar.Brand href="/">Library Management</Navbar.Brand>
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="ms-auto">

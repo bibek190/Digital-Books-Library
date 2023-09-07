@@ -6,11 +6,13 @@ import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
 import { toast } from "react-toastify";
 import CustomInput from "../../components/customInput/CustomInput";
-import AdminLayout from "../../components/layouts/AdminLayout";
+import DefaultLayout from "../../components/layouts/DefaultLayout";
 import { auth, db } from "../../config/firebase-config";
 
-function SignUp() {
-  const [form, setForm] = useState({});
+function PublicSignUp() {
+  const [form, setForm] = useState({
+    role: "student",
+  });
   const [errorMsg, setErrorMsg] = useState();
 
   const inputs = [
@@ -102,7 +104,7 @@ function SignUp() {
   };
 
   return (
-    <AdminLayout>
+    <DefaultLayout>
       <div className="p-3 border shadow rounded admin-form">
         {errorMsg && <Alert variant={"danger"}>{errorMsg}</Alert>}
         <Form onSubmit={handleOnSubmit}>
@@ -118,12 +120,12 @@ function SignUp() {
           ))}
 
           <Button variant="primary" type="submit">
-            Register
+            Register as Student
           </Button>
         </Form>
       </div>
-    </AdminLayout>
+    </DefaultLayout>
   );
 }
 
-export default SignUp;
+export default PublicSignUp;
